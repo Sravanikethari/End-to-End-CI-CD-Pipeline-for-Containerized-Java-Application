@@ -1,0 +1,84 @@
+pipeline {
+    agent any
+    tools{
+        maven 'mymaven'
+    }
+    stages {
+        stage('CleanWS') {
+            steps {
+                echo 'cleanWS'
+            }
+        }
+        stage('checkout'){
+            steps{
+                git 'https://github.com/Sravanikethari/dockerwebapp.git'
+            }
+        }
+        stage('CQA'){
+            steps{
+                withSonarQubeEnv('mysonar') {
+                  sh "mvn clean verify sonar:sonar -Dsonar.projectKey=dockerproject"
+            }
+        }
+    }
+    stage('Qualitygates'){
+        steps{
+            script{
+                waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+            }
+        }
+    }
+    stage('CodeBuild'){
+        steps{
+            sh 'mvn clean package'
+            sh 'cp -r target Docker-app'
+        }
+    }
+    
+    stage('OWASP'){
+        steps{
+            dependencyCheck additionalArguments: '', nvdCredentialsId: 'NVD', odcInstallation: 'my-DPC'
+            dependencyCheckPublisher pattern: '**dependency-check-report.xml'
+        }
+    }
+    stage("Artifact"){
+        steps{
+            s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'amazn-s3-bucket-ksn', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: true, selectedRegion: 'us-east-1', showDirectlyInBrowser: false, sourceFile: 'target/vprofile-v2.war', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'mybucket', userMetadata: []
+        }
+    }
+    stage("Nexus"){
+        steps{
+            nexusArtifactUploader artifacts: [[artifactId: 'vprofile', classifier: '', file: 'target/vprofile-v2.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'com.visualpathit', nexusUrl: '44.203.109.210:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'myproject', version: 'v2'
+        }
+    }
+    stage("Image Build"){
+        steps{
+            sh 'docker build -t appimage Docker-app'
+            sh 'docker build -t dbimage Docker-db'
+        }
+    }
+    stage("Trivy Scan"){
+        steps{
+            sh 'trivy image appimage'
+            sh 'trivy image dbimage'
+        }
+    }
+    stage("Tag&Push"){
+        steps{
+            script{
+            withDockerRegistry(credentialsId: 'dockerhub-cred') {
+                sh 'docker tag appimage sravanik93/dockerproject:app'
+                sh 'docker tag dbimage sravanik93/dockerproject:db'
+                sh 'docker push sravanik93/dockerproject:app'
+                sh 'docker push sravanik93/dockerproject:db'
+          }
+            }
+        }
+    }
+    stage("Deploy"){
+        steps{
+            sh 'docker-compose up -d'
+        }
+    }
+ }
+    }
