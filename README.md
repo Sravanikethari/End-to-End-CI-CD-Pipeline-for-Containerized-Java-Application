@@ -149,7 +149,7 @@ cleanWs()
 
 **Stage 2: Checkout Code**
 ```groovy
-git 'https://github.com/bhargavv62/dockerwebapp.git'
+git 'https://github.com/Sravanikethari/dockerwebapp.git'
 ```
 
 **Stage 3: SonarQube Analysis**
@@ -260,10 +260,10 @@ It should look like this
 
       script{
                 withDockerRegistry(credentialsId: 'dockerhub') {
-                    sh 'docker tag appimage bhargav62/socialmedia:app'
-                    sh 'docker tag dbimage bhargav62/socialmedia:db'
-                    sh 'docker push bhargav62/socialmedia:app'
-                    sh 'docker push bhargav62/socialmedia:db'
+                    sh 'docker tag appimage sravanik93/dockerproject:app'
+                    sh 'docker tag dbimage sravanik93/dockerproject:db'
+                    sh 'docker push sravanik93/dockerproject:app'
+                    sh 'docker push sravanik93/dockerproject:db'
 
 
 **Stage 12: Deploy **
