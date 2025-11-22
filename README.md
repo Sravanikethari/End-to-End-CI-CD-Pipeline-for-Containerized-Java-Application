@@ -46,7 +46,17 @@ This project solves the pain of manual Java deployments by enforcing code qualit
  10. Launch another with c7i-flex.large for TOMCAT everything same 
 
 ---
- 
+
+
+ ##Instance-1
+
+<img width="1920" height="771" alt="instance-1" src="https://github.com/user-attachments/assets/845fee61-6bab-45b4-a450-656f55a848fc" />
+
+##Instance-2
+
+<img width="1907" height="764" alt="instance-2" src="https://github.com/user-attachments/assets/2ea0b9f0-23f4-4a92-aa45-ddafadeacb7c" />
+
+
   
 ### Step 2: Install Jenkins
 
@@ -99,6 +109,9 @@ Login: `admin` / `admin` → Change password →
 My Account → Security → Generate Token → Name: `mytoken` → Copy token
 
 ---
+
+<img width="1905" height="879" alt="sonarqube" src="https://github.com/user-attachments/assets/31094975-1885-4565-b685-69e6b2a7ee06" />
+
 
 ### Step 4: Configure Jenkins Plugins
 
@@ -221,6 +234,10 @@ Pipeline Syntax → S3 Upload:
 
       s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'amazn-s3-bucket-ksn', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: true, selectedRegion: 'ap-northeast-1', showDirectlyInBrowser: false, sourceFile: 'target/vprofile-v2.war', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'mybucket', userMetadata: []
 
+<img width="1920" height="544" alt="s3-bucket" src="https://github.com/user-attachments/assets/8d9e92c8-7644-45ca-a5d1-49dde1cf697b" />
+
+
+
 **Stage 8: Upload Artifact to Nexus**
 
 pipeline syntax → nexusArtifactUploader artifacts → go to pom.xml file (u will find everything u need) → select Nexus3 → Nexus url: copy&paste nexus url → repositary → Nexus repo(created) → generate  
@@ -228,6 +245,10 @@ pipeline syntax → nexusArtifactUploader artifacts → go to pom.xml file (u wi
 it should look like this 
 
     nexusArtifactUploader artifacts: [[artifactId: 'vprofile', classifier: '', file: 'target/vprofile-v2.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'com.visualpathit', nexusUrl: '44.203.109.210:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'myproject', version: 'v2'
+
+<img width="1920" height="877" alt="nexus" src="https://github.com/user-attachments/assets/2b9fefe2-6a61-4bb6-a242-181eacd0dcc5" />
+
+
 
 **Stage 9: Build Docker Images**
 
@@ -271,6 +292,9 @@ It should look like this
                     sh 'docker push sravanik93/dockerproject:app'
                     sh 'docker push sravanik93/dockerproject:db'
 
+<img width="1905" height="873" alt="dockerhub" src="https://github.com/user-attachments/assets/2906094c-1bb2-4db4-8f6b-a661c4df69a1" />
+
+
 
 **Stage 12: Deploy **
 
@@ -306,6 +330,10 @@ After building the pipeline:
 
 ---
 
+<img width="1901" height="636" alt="pipeline-full-stage" src="https://github.com/user-attachments/assets/285d6c0c-0c4d-48e1-808d-e6c8fa42f386" />
+
+
+
 ### Final Pipeline Success Screenshots
 
 ###Instance
@@ -318,28 +346,6 @@ After building the pipeline:
 
 <img width="1907" height="764" alt="instance-2" src="https://github.com/user-attachments/assets/2ea0b9f0-23f4-4a92-aa45-ddafadeacb7c" />
 
-
-##Sonarqube
-
-<img width="1905" height="879" alt="sonarqube" src="https://github.com/user-attachments/assets/31094975-1885-4565-b685-69e6b2a7ee06" />
-
-##s3-Bucket
-
-<img width="1920" height="544" alt="s3-bucket" src="https://github.com/user-attachments/assets/8d9e92c8-7644-45ca-a5d1-49dde1cf697b" />
-
-##Nexus
-
-<img width="1920" height="877" alt="nexus" src="https://github.com/user-attachments/assets/2b9fefe2-6a61-4bb6-a242-181eacd0dcc5" />
-
-
-##DockerHub
-
-<img width="1905" height="873" alt="dockerhub" src="https://github.com/user-attachments/assets/2906094c-1bb2-4db4-8f6b-a661c4df69a1" />
-
-
-##Jenkins Full-stage-Deploy
-
-<img width="1901" height="636" alt="pipeline-full-stage" src="https://github.com/user-attachments/assets/285d6c0c-0c4d-48e1-808d-e6c8fa42f386" />
 
 
 ##Output-screen
