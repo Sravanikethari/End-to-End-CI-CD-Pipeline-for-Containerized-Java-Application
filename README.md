@@ -362,7 +362,7 @@ After building the pipeline:
 
 **Note**: This setup uses open security groups and admin privileges for learning purposes only. In production, follow security best practices (VPC, least privilege IAM, HTTPS, etc.).
 
-Markdown## Conclusion
+## Conclusion
 
 This project delivers a complete, production-ready CI/CD pipeline that transforms the way containerized Java applications are built, tested, secured, and deployed. From a single Git commit, the pipeline automatically compiles the code with Maven, enforces strict code quality through SonarQube, stores artifacts securely in Nexus, scans every Docker image with Trivy to block all critical and high-severity vulnerabilities, and finally deploys the application using Docker Compose — all in just **12 minutes** instead of the usual 2+ hours. That’s a **70% reduction** in release time with zero security compromises.  
 
